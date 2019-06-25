@@ -3,4 +3,4 @@
 ### supports
 
 + eachSequentially
-
++ eachOfLimit
