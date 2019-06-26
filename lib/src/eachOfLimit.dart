@@ -1,7 +1,12 @@
 import 'dart:async';
 
 Future<List> eachOfLimit(List<Future> futures, int limit,
-    [Function eachCallback]) async {
+    [void eachCallback(
+        [int index,
+        int running,
+        int completeCount,
+        bool done,
+        List result])]) async {
   Completer<List> completer = new Completer<List>();
   List result = new List(futures.length);
   bool done = false;
