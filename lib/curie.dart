@@ -1,4 +1,5 @@
 library curie;
 
-export 'src/eachSequentially.dart';
-export 'src/eachOfLimit.dart';
+export 'src/eachFuture.dart';
+export 'src/eachLimit.dart';
+export 'src/waterfall.dart';

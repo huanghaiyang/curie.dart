@@ -2,5 +2,6 @@
 
 ### supports
 
-+ eachSequentially
-+ eachOfLimit
++ eachFuture
++ eachLimit
++ waterfall
