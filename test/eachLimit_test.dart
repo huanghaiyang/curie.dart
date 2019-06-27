@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('async', () {
-    test('eachOfLimit', () async {
+    test('eachLimit', () async {
       List<Function> functions = new List();
       functions.add(delayedConstantFunction(1, 100));
       functions.add(delayedConstantFunction(2, 1000));

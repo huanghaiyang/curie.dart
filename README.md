@@ -5,3 +5,4 @@
 + eachSeries
 + eachLimit
 + waterfall
++ some
