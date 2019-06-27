@@ -8,7 +8,7 @@ Future<List> eachLimit(List<Function> functions, int limit,
         bool done,
         List result])]) async {
   Completer<List> completer = new Completer<List>();
-  List result = new List(functions.length);
+  List result = new List();
   bool done = false;
   int running = 0;
   int index = 0;
@@ -22,7 +22,7 @@ Future<List> eachLimit(List<Function> functions, int limit,
       if (taskIndex < functions.length) {
         Function task = functions[taskIndex];
         dynamic value = await task();
-        result[taskIndex] = value;
+        result.add(value);
         if (eachCallback != null) {
           eachCallback(taskIndex, running, completeCount, done, result);
         }

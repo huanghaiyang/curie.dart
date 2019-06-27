@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:curie/curie.dart';
 import 'package:curie/src/utils.dart';
 import 'package:test/test.dart';
@@ -18,14 +16,12 @@ void main() {
       functions.add(delayedConstantFunction(8, 2100));
       functions.add(delayedConstantFunction(9, 30));
       functions.add(delayedConstantFunction(10, 10));
-      List actual = await eachLimit(functions, 3, ([int index,
-      int running,
-      int completeCount,
-      bool done,
-      List result]) {
-        print((index + 1).toString() + ' : ' + result[index].toString());
+      List actual = await eachLimit(functions, 3, (
+          [int index, int running, int completeCount, bool done, List result]) {
+        print(
+            (index).toString() + ' : ' + result[result.length - 1].toString());
       });
-      expect(actual, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      expect(actual, [1, 4, 5, 6, 7, 2, 9, 10, 3, 8]);
     });
   });
 }
