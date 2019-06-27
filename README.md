@@ -2,6 +2,6 @@
 
 ### supports
 
-+ eachFuture
++ eachSeries
 + eachLimit
 + waterfall
