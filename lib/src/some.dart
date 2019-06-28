@@ -1,7 +1,6 @@
 import 'dart:async';
 
-Future<bool> some(List<Function> functions,
-    [Function callback, bool immediateEnd = true]) {
+Future<bool> some(List<Function> functions, [Function callback]) {
   Completer<bool> completer = new Completer();
   List<bool> tmpResult = new List(functions.length);
   int completeCounter = 0;
