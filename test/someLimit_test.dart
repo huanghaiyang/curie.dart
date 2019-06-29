@@ -47,7 +47,7 @@ void main() {
       });
       int endTime = DateTime.now().millisecondsSinceEpoch;
       expect(actual, false);
-      expect(endTime - startTime >= 400 && endTime - startTime < 410, true);
+      expect(endTime - startTime >= 400 && endTime - startTime < 450, true);
     });
   });
 }
