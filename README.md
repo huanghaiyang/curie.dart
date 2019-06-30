@@ -11,8 +11,10 @@ keep on developing
 + waterfall
 + some
 + someLimit
++ someSeries
 + every
 + everyLimit
++ everySeries
 + times
 + timesSeries
 + timesLimit
