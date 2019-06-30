@@ -7,5 +7,6 @@ export 'src/everyLimit.dart';
 export 'src/some.dart' show some;
 export 'src/someLimit.dart';
 export 'src/times.dart' show times;
+export 'src/timesLimit.dart';
 export 'src/timesSeries.dart' show timesSeries;
 export 'src/waterfall.dart';
