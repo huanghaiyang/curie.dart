@@ -12,3 +12,4 @@
 + every
 + everyLimit
 + times
++ timesSeries
