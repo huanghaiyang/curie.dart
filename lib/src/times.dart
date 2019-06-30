@@ -1,5 +1,3 @@
-import 'dart:async';
-
 void times(Function function, int times, [Function callback]) {
   List tmpResult = new List(times);
   int completeCounter = 0;
@@ -13,7 +11,7 @@ void times(Function function, int times, [Function callback]) {
   }
 }
 
-Future timeImpl(Function function, Function incrementCounter, int index,
+void timeImpl(Function function, Function incrementCounter, int index,
     List tmpResult, int times,
     [Function callback]) async {
   dynamic result = await function();
