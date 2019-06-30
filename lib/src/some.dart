@@ -17,7 +17,8 @@ Future<bool> some(List<Function> functions, [Function callback]) {
 }
 
 void someImpl(List<Function> functions, int index, List tmpResult,
-    Completer completer, Function incrementCounter, Function callback) async {
+    Completer completer, Function incrementCounter,
+    [Function callback]) async {
   Function function = functions[index];
   bool result = await function();
   tmpResult[index] = result;
