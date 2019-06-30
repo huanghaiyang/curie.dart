@@ -22,7 +22,7 @@ void someImpl(List<Function> functions, int index, List tmpResult,
   bool result = await function();
   tmpResult[index] = result;
   if (result) {
-    completer.complete(result);
+    completer.complete(true);
   }
   int counter = incrementCounter();
   if (counter == functions.length) {
