@@ -8,7 +8,7 @@ keep on developing
 
 + eachSeries
 ```dart
-Future<List> eachSeries(List<Function> functions) async
+Future<List> eachSeries(List<Function> functions)
 ```
 + eachLimit
 ```dart
@@ -60,4 +60,8 @@ Future<List> timesSeries(Function function, int times, [Function callback])
 ```dart
 
 Future<List> timesLimit(Function function, int times, int limit, [Function callback]) 
+```
++ retry
+```dart
+Future retry(Function function, int times, Function interval, [Function callback])
 ```

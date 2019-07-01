@@ -12,6 +12,22 @@ Function delayedConstantFunction(dynamic value, int timeout) {
   };
 }
 
+Function delayedConstantFunctionWhenError(
+    dynamic value, int timeout, List<int> errorIndex, Exception error) {
+  int index = 0;
+  return () async {
+    return await Future.delayed(new Duration(milliseconds: timeout), () {
+      if (errorIndex.contains(index)) {
+        index++;
+        throw error;
+      } else {
+        index++;
+        return value;
+      }
+    });
+  };
+}
+
 Function delayedSum(int value, timeout) {
   return ([int preResult]) async {
     int curr = await Future.delayed(new Duration(milliseconds: timeout), () {
