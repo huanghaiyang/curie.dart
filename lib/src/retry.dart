@@ -11,6 +11,15 @@ Future retry(Function function, int times, Function interval,
 void retryImpl(Function function, int times, Function interval, List errorList,
     Completer completer,
     [Function callback]) async {
+  if (times == 0) {
+    if (callback != null) {
+      Function.apply(callback, [errorList, null]);
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    }
+    return;
+  }
   try {
     dynamic result = await function();
     if (callback != null) {
@@ -25,8 +34,6 @@ void retryImpl(Function function, int times, Function interval, List errorList,
           new Duration(milliseconds: intervalTime),
           () => retryImpl(
               function, times - 1, interval, errorList, completer, callback));
-    } else {
-      completer.complete();
     }
   }
 }

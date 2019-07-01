@@ -10,7 +10,7 @@ void main() {
           delayedConstantFunctionWhenError(
               1, 100, [0, 1, 2], new Exception("custom error")),
           4,
-          () => 100, (List actual, dynamic result) {
+          () => 100, (List actual, [dynamic result]) {
         expect(actual.length, 3);
         int endTime = DateTime.now().millisecondsSinceEpoch;
         expect(endTime - startTime >= 700 && endTime - startTime < 800, true);
@@ -24,7 +24,7 @@ void main() {
           delayedConstantFunctionWhenError(
               1, 100, [0, 1, 2, 3], new Exception("custom error")),
           4,
-          () => 100, (List actual, dynamic result) {
+          () => 100, (List actual, [dynamic result]) {
         expect(actual.length, 4);
         int endTime = DateTime.now().millisecondsSinceEpoch;
         expect(endTime - startTime >= 800 && endTime - startTime < 900, true);
