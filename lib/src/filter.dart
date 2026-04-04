@@ -1,11 +1,35 @@
 import 'dart:async';
+import 'cancel_token.dart';
 
-Future<List> filter(List<Function> functions, Function predicate, [Function callback]) {
+Future<List> filter(List<Function> functions, Function predicate, [Function callback, CancelToken cancelToken]) {
   Completer<List> completer = new Completer();
   List tmpResult = new List();
-  List<bool> results = new List(functions.length);
+  Map<int, dynamic> resultMap = new Map();
+  Map<int, dynamic> errorMap = new Map();
   int completeCounter = 0;
   bool done = false;
+  
+  // 处理空列表情况
+  if (functions.isEmpty) {
+    if (!completer.isCompleted) {
+      completer.complete(tmpResult);
+    }
+    if (callback != null) {
+      Function.apply(callback, [resultMap, errorMap]);
+    }
+    return completer.future;
+  }
+  
+  // 监听取消操作
+  if (cancelToken != null) {
+    cancelToken.whenCancelled.then((_) {
+      if (!completer.isCompleted) {
+        completer.completeError(CancelException('Operation cancelled'));
+      }
+      done = true;
+    });
+  }
+  
   int incrementCounter() {
     completeCounter++;
     return completeCounter;
@@ -13,33 +37,45 @@ Future<List> filter(List<Function> functions, Function predicate, [Function call
 
   for (int index = 0; index < functions.length; index++) {
     filterImpl(
-        functions, index, predicate, results, tmpResult, completer, incrementCounter, callback, () => done);
+        functions, index, predicate, resultMap, errorMap, tmpResult, completer, incrementCounter, callback, () => done, cancelToken);
   }
   return completer.future;
 }
 
-void filterImpl(List<Function> functions, int index, Function predicate, List<bool> results, List tmpResult,
-    Completer completer, Function incrementCounter, Function callback, Function isDone) async {
+void filterImpl(List<Function> functions, int index, Function predicate, Map<int, dynamic> resultMap, Map<int, dynamic> errorMap, List tmpResult,
+    Completer completer, Function incrementCounter, Function callback, Function isDone, CancelToken cancelToken) async {
+  // 检查是否已取消
+  if (cancelToken?.isCancelled ?? false || isDone()) {
+    return;
+  }
+  
   Function function = functions[index];
   try {
     dynamic result = await function();
-    if (isDone()) {
+    
+    // 检查是否已取消
+    if (cancelToken?.isCancelled ?? false || isDone()) {
       return;
     }
+    
     bool shouldInclude = await predicate(result);
-    if (isDone()) {
+    
+    // 检查是否已取消
+    if (cancelToken?.isCancelled ?? false || isDone()) {
       return;
     }
-    results[index] = shouldInclude;
+    
+    resultMap[index] = shouldInclude ? result : null;
     if (shouldInclude) {
       tmpResult.add(result);
     }
   } catch (e) {
-    // 忽略错误，继续执行
-    if (isDone()) {
+    // 记录错误，继续执行
+    if (cancelToken?.isCancelled ?? false || isDone()) {
       return;
     }
-    results[index] = false;
+    resultMap[index] = null;
+    errorMap[index] = e;
   }
   int counter = incrementCounter();
   if (counter == functions.length) {
@@ -47,7 +83,8 @@ void filterImpl(List<Function> functions, int index, Function predicate, List<bo
       completer.complete(tmpResult);
     }
     if (callback != null) {
-      Function.apply(callback, [tmpResult]);
+      Function.apply(callback, [resultMap, errorMap]);
     }
   }
 }
+

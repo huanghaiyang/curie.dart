@@ -24,11 +24,11 @@ void main() {
       delayedConstantFunction(3, 10)
     ];
 
-    List actual;
-    await mapLimit(functions, 2, (result) {
-      actual = result;
+    Map<int, dynamic> actual;
+    await mapLimit(functions, 2, (Map<int, dynamic> resultMap, Map<int, dynamic> errorMap) {
+      actual = resultMap;
     });
-    expect(actual, [1, 2, 3]);
+    expect(actual, {0: 1, 1: 2, 2: 3});
   });
 
   test('mapLimit with error test', () async {

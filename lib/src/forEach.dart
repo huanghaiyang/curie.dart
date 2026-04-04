@@ -4,6 +4,18 @@ Future<void> forEach(List<Function> functions, [Function callback]) {
   Completer<void> completer = new Completer();
   int completeCounter = 0;
   bool done = false;
+  
+  // 处理空列表情况
+  if (functions.isEmpty) {
+    if (!completer.isCompleted) {
+      completer.complete();
+    }
+    if (callback != null) {
+      Function.apply(callback, []);
+    }
+    return completer.future;
+  }
+  
   int incrementCounter() {
     completeCounter++;
     return completeCounter;

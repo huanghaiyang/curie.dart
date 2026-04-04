@@ -24,11 +24,11 @@ void main() {
       delayedConstantFunction(3, 10)
     ];
 
-    List actual;
-    await filterLimit(functions, (value) async => value > 1, 2, (result) {
-      actual = result;
+    Map<int, dynamic> actual;
+    await filterLimit(functions, (value) async => value > 1, 2, (Map<int, dynamic> resultMap, Map<int, dynamic> errorMap) {
+      actual = resultMap;
     });
-    expect(actual, [2, 3]);
+    expect(actual, {0: null, 1: 2, 2: 3});
   });
 
   test('filterLimit with error test', () async {

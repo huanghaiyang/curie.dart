@@ -28,3 +28,4 @@ export 'src/series.dart' show series;
 export 'src/forEach.dart' show forEach;
 export 'src/forEachLimit.dart';
 export 'src/forEachSeries.dart' show forEachSeries;
+export 'src/cancel_token.dart';

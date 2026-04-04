@@ -5,6 +5,18 @@ Future<bool> every(List<Function> functions, [Function callback]) {
   List<bool> tmpResult = new List(functions.length);
   int completeCounter = 0;
   bool done = false;
+  
+  // 处理空列表情况
+  if (functions.isEmpty) {
+    if (!completer.isCompleted) {
+      completer.complete(true);
+    }
+    if (callback != null) {
+      Function.apply(callback, [tmpResult]);
+    }
+    return completer.future;
+  }
+  
   int incrementCounter() {
     completeCounter++;
     return completeCounter;
