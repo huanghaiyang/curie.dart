@@ -13,29 +13,47 @@ Future<List> timesLimit(Function function, int times, int limit,
     if (currIndex != null) {
       running++;
       int taskIndex = currIndex;
-      index++;
-      if (taskIndex < times) {
-        dynamic value = await function();
-        result[taskIndex] = value;
+      if (taskIndex < times && !done) {
+        try {
+          dynamic value = await function();
+          if (done) {
+            running--;
+            return;
+          }
+          result[taskIndex] = value;
+        } catch (e) {
+          // 忽略错误，继续执行
+          if (done) {
+            running--;
+            return;
+          }
+          result[taskIndex] = null;
+        }
         running--;
         completeCount++;
         looping = false;
         if (completeCount == times) {
           done = true;
-          completer.complete(result);
+          if (!completer.isCompleted) {
+            completer.complete(result);
+          }
           if (callback != null) {
             Function.apply(callback, [result]);
           }
-        } else {
+        } else if (!done) {
           if (!looping) {
             execute();
           }
         }
+      } else {
+        running--;
       }
     } else {
       looping = true;
-      while (running < limit && !done) {
-        execute(index);
+      while (running < limit && !done && index < times) {
+        int currentIndex = index;
+        index++;
+        execute(currentIndex);
       }
     }
   }

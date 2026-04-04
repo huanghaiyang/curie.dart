@@ -1,12 +1,18 @@
+import 'dart:async';
+
 Future<dynamic> waterfall(List<Function> functions) async {
-  dynamic preResult;
-  List<int> list = List();
-  for (int i = 0; i < functions.length; i++) {
-    list.add(i);
+  if (functions.isEmpty) {
+    return null;
   }
-  await for (int i in Stream.fromIterable(list)) {
+  dynamic preResult;
+  for (int i = 0; i < functions.length; i++) {
     Function function = functions[i];
-    preResult = await Function.apply(function, [preResult]);
+    try {
+      preResult = await Function.apply(function, [preResult]);
+    } catch (e) {
+      // 忽略错误，继续执行
+      preResult = null;
+    }
   }
   return preResult;
 }

@@ -14,9 +14,9 @@ void retryImpl(Function function, int times, Function interval, List errorList,
   if (times == 0) {
     if (callback != null) {
       Function.apply(callback, [errorList, null]);
-      if (!completer.isCompleted) {
-        completer.complete();
-      }
+    }
+    if (!completer.isCompleted) {
+      completer.complete(null);
     }
     return;
   }
@@ -25,7 +25,9 @@ void retryImpl(Function function, int times, Function interval, List errorList,
     if (callback != null) {
       Function.apply(callback, [errorList, result]);
     }
-    completer.complete(result);
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
   } catch (error) {
     errorList.add(error);
     int intervalTime = await interval();

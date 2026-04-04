@@ -11,8 +11,13 @@ void eachSeriesImpl(List<Function> functions, int index, List tmpResult,
   if (functions.isEmpty || index >= functions.length) {
     return overallCompleter.complete(tmpResult);
   }
-  Function future = functions[index];
-  dynamic result = await future;
-  tmpResult.add(result);
+  Function function = functions[index];
+  try {
+    dynamic result = await function();
+    tmpResult.add(result);
+  } catch (e) {
+    // 忽略错误，继续执行
+    tmpResult.add(null);
+  }
   eachSeriesImpl(functions, index + 1, tmpResult, overallCompleter);
 }

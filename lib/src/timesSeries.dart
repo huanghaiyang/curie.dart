@@ -11,10 +11,26 @@ Future<List> timesSeries(Function function, int times, [Function callback]) {
 void timesSeriesImpl(Function function, int index, List tmpResult, int times,
     Completer<List> completer,
     [Function callback]) async {
-  dynamic result = await function();
-  tmpResult[index] = result;
+  if (index >= times) {
+    if (!completer.isCompleted) {
+      completer.complete(tmpResult);
+    }
+    if (callback != null) {
+      callback(tmpResult);
+    }
+    return;
+  }
+  try {
+    dynamic result = await function();
+    tmpResult[index] = result;
+  } catch (e) {
+    // 忽略错误，继续执行
+    tmpResult[index] = null;
+  }
   if (index == times - 1) {
-    completer.complete(tmpResult);
+    if (!completer.isCompleted) {
+      completer.complete(tmpResult);
+    }
     if (callback != null) {
       callback(tmpResult);
     }

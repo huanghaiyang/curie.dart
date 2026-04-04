@@ -18,30 +18,52 @@ Future<List> eachLimit(List<Function> functions, int limit,
     if (currIndex != null) {
       running++;
       int taskIndex = currIndex;
-      index++;
-      if (taskIndex < functions.length) {
+      if (taskIndex < functions.length && !done) {
         Function task = functions[taskIndex];
-        dynamic value = await task();
-        result.add(value);
-        if (eachCallback != null) {
-          eachCallback(taskIndex, running, completeCount, done, result);
-        }
-        running--;
-        completeCount++;
-        looping = false;
-        if (completeCount == functions.length) {
-          done = true;
-          completer.complete(result);
-        } else {
-          if (!looping) {
-            execute();
+        try {
+          dynamic value = await task();
+          if (done) {
+            running--;
+            return;
+          }
+          result.add(value);
+          running--;
+          completeCount++;
+          if (eachCallback != null) {
+            eachCallback(taskIndex, running, completeCount, done, result);
+          }
+          looping = false;
+          if (completeCount == functions.length) {
+            done = true;
+            completer.complete(result);
+          } else if (!done) {
+            if (!looping) {
+              execute();
+            }
+          }
+        } catch (e) {
+          // 忽略错误，继续执行
+          running--;
+          completeCount++;
+          looping = false;
+          if (completeCount == functions.length) {
+            done = true;
+            completer.complete(result);
+          } else if (!done) {
+            if (!looping) {
+              execute();
+            }
           }
         }
+      } else {
+        running--;
       }
     } else {
       looping = true;
-      while (running < limit && !done) {
-        execute(index);
+      while (running < limit && !done && index < functions.length) {
+        int currentIndex = index;
+        index++;
+        execute(currentIndex);
       }
     }
   }
