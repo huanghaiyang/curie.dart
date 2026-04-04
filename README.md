@@ -238,6 +238,277 @@ void main() async {
 }
 ```
 
+#### 14. map - 并行执行函数列表，返回所有结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3
+  ];
+  
+  List results = await map(functions);
+  print(results); // 输出: [1, 2, 3]
+}
+```
+
+#### 15. mapLimit - 限制并发数执行函数列表，返回所有结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  List results = await mapLimit(functions, 2);
+  print(results); // 输出: [1, 2, 3, 4, 5]
+}
+```
+
+#### 16. mapSeries - 串行执行函数列表，返回所有结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3
+  ];
+  
+  List results = await mapSeries(functions);
+  print(results); // 输出: [1, 2, 3]
+}
+```
+
+#### 17. filter - 并行执行函数列表，过滤出满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  List results = await filter(functions, (value) async => value > 2);
+  print(results); // 输出: [3, 4, 5]
+}
+```
+
+#### 18. filterLimit - 限制并发数执行函数列表，过滤出满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  List results = await filterLimit(functions, (value) async => value > 2, 2);
+  print(results); // 输出: [3, 4, 5]
+}
+```
+
+#### 19. filterSeries - 串行执行函数列表，过滤出满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  List results = await filterSeries(functions, (value) async => value > 2);
+  print(results); // 输出: [3, 4, 5]
+}
+```
+
+#### 20. reduce - 将函数列表的结果累加到一个值
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3
+  ];
+  
+  dynamic result = await reduce(functions, (acc, value) => acc + value, 0);
+  print(result); // 输出: 6
+}
+```
+
+#### 21. detect - 并行执行函数列表，找到第一个满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  dynamic result = await detect(functions, (value) async => value > 2);
+  print(result); // 输出: 3
+}
+```
+
+#### 22. detectLimit - 限制并发数执行函数列表，找到第一个满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  dynamic result = await detectLimit(functions, (value) async => value > 2, 2);
+  print(result); // 输出: 3
+}
+```
+
+#### 23. detectSeries - 串行执行函数列表，找到第一个满足条件的结果
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 1,
+    () async => 2,
+    () async => 3,
+    () async => 4,
+    () async => 5
+  ];
+  
+  dynamic result = await detectSeries(functions, (value) async => value > 2);
+  print(result); // 输出: 3
+}
+```
+
+#### 24. parallel - 并行执行函数列表
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 'Task 1',
+    () async => 'Task 2',
+    () async => 'Task 3'
+  ];
+  
+  List results = await parallel(functions);
+  print(results); // 输出: [Task 1, Task 2, Task 3]
+}
+```
+
+#### 25. series - 串行执行函数列表
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => 'Task 1',
+    () async => 'Task 2',
+    () async => 'Task 3'
+  ];
+  
+  List results = await series(functions);
+  print(results); // 输出: [Task 1, Task 2, Task 3]
+}
+```
+
+#### 26. forEach - 并行遍历函数列表
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => print('Task 1'),
+    () async => print('Task 2'),
+    () async => print('Task 3')
+  ];
+  
+  await forEach(functions);
+  print('All tasks completed');
+}
+```
+
+#### 27. forEachLimit - 限制并发数遍历函数列表
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => print('Task 1'),
+    () async => print('Task 2'),
+    () async => print('Task 3'),
+    () async => print('Task 4'),
+    () async => print('Task 5')
+  ];
+  
+  await forEachLimit(functions, 2);
+  print('All tasks completed');
+}
+```
+
+#### 28. forEachSeries - 串行遍历函数列表
+
+```dart
+import 'package:curie/curie.dart';
+
+void main() async {
+  List<Function> functions = [
+    () async => print('Task 1'),
+    () async => print('Task 2'),
+    () async => print('Task 3')
+  ];
+  
+  await forEachSeries(functions);
+  print('All tasks completed');
+}
+```
+
 ### 函数说明
 
 #### 1. eachSeries
@@ -393,6 +664,183 @@ Future retry(Function function, int times, Function interval, [Function callback
 - `times`：最大重试次数
 - `interval`：每次重试的间隔时间（毫秒）
 - `callback`：可选，执行完成后的回调函数
+
+#### 14. map
+
+```dart
+Future<List> map(List<Function> functions, [Function callback])
+```
+
+并行执行函数列表，返回所有函数的执行结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 15. mapLimit
+
+```dart
+Future<List> mapLimit(List<Function> functions, int limit, [Function callback])
+```
+
+限制并发数执行函数列表，返回所有函数的执行结果。
+
+- `functions`：要执行的函数列表
+- `limit`：最大并发数
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 16. mapSeries
+
+```dart
+Future<List> mapSeries(List<Function> functions, [Function callback])
+```
+
+串行执行函数列表，返回所有函数的执行结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 17. filter
+
+```dart
+Future<List> filter(List<Function> functions, Function predicate, [Function callback])
+```
+
+并行执行函数列表，过滤出满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 18. filterLimit
+
+```dart
+Future<List> filterLimit(List<Function> functions, Function predicate, int limit, [Function callback])
+```
+
+限制并发数执行函数列表，过滤出满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `limit`：最大并发数
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 19. filterSeries
+
+```dart
+Future<List> filterSeries(List<Function> functions, Function predicate, [Function callback])
+```
+
+串行执行函数列表，过滤出满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 20. reduce
+
+```dart
+Future<dynamic> reduce(List<Function> functions, Function reducer, [dynamic initialValue, Function callback])
+```
+
+将函数列表的结果累加到一个值。
+
+- `functions`：要执行的函数列表
+- `reducer`：累加函数，接收累积值和当前值，返回新的累积值
+- `initialValue`：可选，初始累积值
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 21. detect
+
+```dart
+Future<dynamic> detect(List<Function> functions, Function predicate, [Function callback])
+```
+
+并行执行函数列表，找到第一个满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `callback`：可选，执行完成后的回调函数
+
+#### 22. detectLimit
+
+```dart
+Future<dynamic> detectLimit(List<Function> functions, Function predicate, int limit, [Function callback])
+```
+
+限制并发数执行函数列表，找到第一个满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `limit`：最大并发数
+- `callback`：可选，执行完成后的回调函数
+
+#### 23. detectSeries
+
+```dart
+Future<dynamic> detectSeries(List<Function> functions, Function predicate, [Function callback])
+```
+
+串行执行函数列表，找到第一个满足条件的结果。
+
+- `functions`：要执行的函数列表
+- `predicate`：判断函数，返回 true 表示满足条件
+- `callback`：可选，执行完成后的回调函数
+
+#### 24. parallel
+
+```dart
+Future<List> parallel(List<Function> functions, [Function callback])
+```
+
+并行执行函数列表，返回所有函数的执行结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 25. series
+
+```dart
+Future<List> series(List<Function> functions, [Function callback])
+```
+
+串行执行函数列表，返回所有函数的执行结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 26. forEach
+
+```dart
+Future<void> forEach(List<Function> functions, [Function callback])
+```
+
+并行遍历函数列表，不返回结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 27. forEachLimit
+
+```dart
+Future<void> forEachLimit(List<Function> functions, int limit, [Function callback])
+```
+
+限制并发数遍历函数列表，不返回结果。
+
+- `functions`：要执行的函数列表
+- `limit`：最大并发数
+- `callback`：可选，所有函数执行完成后的回调函数
+
+#### 28. forEachSeries
+
+```dart
+Future<void> forEachSeries(List<Function> functions, [Function callback])
+```
+
+串行遍历函数列表，不返回结果。
+
+- `functions`：要执行的函数列表
+- `callback`：可选，所有函数执行完成后的回调函数
 
 ### 贡献
 
