@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'cancel_token.dart';
+import 'utils.dart';
 
 Future<List> map(List<Function> functions, [Function callback, CancelToken cancelToken]) {
   Completer<List> completer = new Completer();
@@ -10,25 +11,13 @@ Future<List> map(List<Function> functions, [Function callback, CancelToken cance
   bool done = false;
   
   // 处理空列表情况
+  handleEmptyList(functions, completer, tmpResult, callback, resultMap, errorMap);
   if (functions.isEmpty) {
-    if (!completer.isCompleted) {
-      completer.complete(tmpResult);
-    }
-    if (callback != null) {
-      Function.apply(callback, [resultMap, errorMap]);
-    }
     return completer.future;
   }
   
   // 监听取消操作
-  if (cancelToken != null) {
-    cancelToken.whenCancelled.then((_) {
-      if (!completer.isCompleted) {
-        completer.completeError(CancelException('Operation cancelled'));
-      }
-      done = true;
-    });
-  }
+  setupCancelTokenListener(completer, cancelToken, () => done = true);
   
   int incrementCounter() {
     completeCounter++;
@@ -44,37 +33,23 @@ Future<List> map(List<Function> functions, [Function callback, CancelToken cance
 
 void mapImpl(List<Function> functions, int index, List tmpResult, Map<int, dynamic> resultMap, Map<int, dynamic> errorMap,
     Completer completer, Function incrementCounter, Function callback, Function isDone, CancelToken cancelToken) async {
-  // 检查是否已取消
+  // 执行任务
+  dynamic result = await executeTask(functions[index], cancelToken, isDone);
   if (cancelToken?.isCancelled ?? false || isDone()) {
     return;
   }
   
-  Function function = functions[index];
   try {
-    dynamic result = await function();
-    // 检查是否已取消
-    if (cancelToken?.isCancelled ?? false || isDone()) {
-      return;
-    }
     tmpResult[index] = result;
     resultMap[index] = result;
   } catch (e) {
-    // 记录错误，继续执行
-    if (cancelToken?.isCancelled ?? false || isDone()) {
-      return;
-    }
     tmpResult[index] = null;
     resultMap[index] = null;
     errorMap[index] = e;
   }
+  
+  // 处理任务完成
   int counter = incrementCounter();
-  if (counter == functions.length) {
-    if (!completer.isCompleted) {
-      completer.complete(tmpResult);
-    }
-    if (callback != null) {
-      Function.apply(callback, [resultMap, errorMap]);
-    }
-  }
+  handleTaskComplete(counter, functions.length, completer, tmpResult, callback, resultMap, errorMap);
 }
 

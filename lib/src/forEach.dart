@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'utils.dart';
 
 Future<void> forEach(List<Function> functions, [Function callback]) {
   Completer<void> completer = new Completer();
@@ -6,13 +7,8 @@ Future<void> forEach(List<Function> functions, [Function callback]) {
   bool done = false;
   
   // 处理空列表情况
+  handleEmptyList(functions, completer, null, callback);
   if (functions.isEmpty) {
-    if (!completer.isCompleted) {
-      completer.complete();
-    }
-    if (callback != null) {
-      Function.apply(callback, []);
-    }
     return completer.future;
   }
   
@@ -30,19 +26,10 @@ Future<void> forEach(List<Function> functions, [Function callback]) {
 
 void forEachImpl(List<Function> functions, int index,
     Completer completer, Function incrementCounter, Function callback, Function isDone) async {
-  Function function = functions[index];
-  try {
-    await function();
-  } catch (e) {
-    // 忽略错误，继续执行
-  }
+  // 执行任务
+  await executeTask(functions[index], null, isDone);
+  
+  // 处理任务完成
   int counter = incrementCounter();
-  if (counter == functions.length) {
-    if (!completer.isCompleted) {
-      completer.complete();
-    }
-    if (callback != null) {
-      Function.apply(callback, []);
-    }
-  }
+  handleTaskComplete(counter, functions.length, completer, null, callback);
 }
